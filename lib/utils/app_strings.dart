@@ -1,0 +1,30 @@
+class AppStrings {
+  static String title = "Laundry Management App";
+  static String title_1 = "Laundry Management";
+  static String loginHeading = "Welcome";
+  static String enter = "Enter";
+  static String signin = "Sign In";
+  static String signup = "Sign Up";
+  static String email = "Email";
+  static String email_address = "Email Address";
+  static String password = "Password";
+  static String confirm_password = "Confirm Password";
+  static String address = "Address";
+  static String phone = "Phone";
+  static String today = "Today";
+  static String no_of_orders = "No. Of Orders";
+  static String queue = "Queue";
+  static String done = "Done";
+  static String your_order = "Your Order";
+  static String print = "Print";
+  static String washing = "Washing";
+  static String being_washed = "Being Washed";
+  static String being_prepared = "Being Prepared";
+  static String orders = "Orders";
+  static String name = "Name";
+  static String no_of_clothes = "No. of Clothes";
+  static String amount = "Amount";
+  static String paid = "Paid";
+  static String remaining = "Remaining";
+  static String retur = "Return";
+}
