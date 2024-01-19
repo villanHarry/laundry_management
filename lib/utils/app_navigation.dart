@@ -12,7 +12,9 @@ class AppNavigation {
       Navigator.of(Constants.navigatorKey.currentContext!)
           .pushReplacement(MaterialPageRoute(builder: (context) => screen));
 
-  static void popallStack(Widget screen) =>
-      Navigator.of(Constants.navigatorKey.currentContext!)
-          .popUntil((route) => route.isFirst);
+  static void popallStack(Widget screen) {
+    Navigator.of(Constants.navigatorKey.currentContext!)
+        .popUntil((route) => route.isFirst);
+    push(screen);
+  }
 }

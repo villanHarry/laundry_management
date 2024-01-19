@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class Constants {
@@ -22,4 +23,10 @@ class Constants {
         gravity: ToastGravity.CENTER,
         fontSize: 16.0);
   }
+
+  static Icon bottomIcons(IconData icon, {double? size}) => Icon(
+        icon,
+        size: size ?? 35.r,
+        color: Constants.backgroundColor,
+      );
 }

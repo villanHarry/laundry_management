@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         width: .5.sw,
                         child: CustomButton(
                             onPress: () {
-                              AppNavigation.push(const HomeScreen());
+                              AppNavigation.popallStack(const HomeScreen());
                             },
                             bgColor: Constants.backgroundColor,
                             text: AppStrings.signin.toUpperCase(),

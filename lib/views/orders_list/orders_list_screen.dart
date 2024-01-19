@@ -5,6 +5,7 @@ import 'package:laundry_management/utils/app_navigation.dart';
 import 'package:laundry_management/utils/app_strings.dart';
 import 'package:laundry_management/utils/app_text_style.dart';
 import 'package:laundry_management/utils/constants.dart';
+import 'package:laundry_management/widgets/product_card.dart';
 
 class OrdersListScreen extends StatefulWidget {
   const OrdersListScreen({super.key, required this.status});
@@ -65,11 +66,12 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                   child:
                       //
                       Center(
-                    child: heading("No Orders Found!", fontSize: 24.sp),
+                    child: ProductCard.heading("No Orders Found!",
+                        fontSize: 24.sp),
                   )
                   // ListView(
                   //     padding: EdgeInsets.zero,
-                  //     children: [for (int i = 0; i < 10; i++) entry()])
+                  //     children: [for (int i = 0; i < 10; i++) ProductCard()])
                   //
                   ,
                 ),
@@ -78,41 +80,4 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
           ),
         ));
   }
-
-  Widget entry({String title = "", String address = ""}) => Padding(
-        padding: EdgeInsets.only(bottom: 10.h),
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10.r, horizontal: 15.r),
-          decoration: BoxDecoration(
-              border: Border.all(), borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            children: [
-              Row(children: [
-                heading("Title"),
-                const Spacer(),
-                value("10 PKR")
-              ]),
-              5.verticalSpace,
-              Row(children: [
-                SizedBox(width: 150.w, child: value("Address")),
-                const Spacer(),
-                value("queue", align: TextAlign.end)
-              ]),
-            ],
-          ),
-        ),
-      );
-
-  Widget heading(String heading, {double? fontSize}) => Text(heading,
-      textAlign: TextAlign.start,
-      style: AppTextStyle.boldTextStyle(
-          fgColor: Colors.black,
-          fontSize: fontSize ?? 16.sp,
-          overflow: TextOverflow.ellipsis));
-
-  Widget value(String value, {align = TextAlign.start}) => Text(value,
-      textAlign: align,
-      overflow: TextOverflow.ellipsis,
-      style: AppTextStyle.regularTextStyle(
-          fgColor: Colors.black, fontSize: 16.sp));
 }
