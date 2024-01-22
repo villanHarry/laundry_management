@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,6 +7,7 @@ import 'package:laundry_management/utils/app_navigation.dart';
 import 'package:laundry_management/utils/app_strings.dart';
 import 'package:laundry_management/utils/app_text_style.dart';
 import 'package:laundry_management/utils/constants.dart';
+import 'package:laundry_management/utils/firebaseServices.dart';
 import 'package:laundry_management/views/getting_started/getting_started.dart';
 import 'package:laundry_management/views/print_screen/print_screen.dart';
 import 'package:laundry_management/views/your_orders_screen/your_orders_screen.dart';
@@ -21,118 +24,159 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String dropDOwnValue = AppStrings.queue;
+  bool loading = false;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      log(auth!.currentUser.toString());
+    });
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: Constants.lightMode,
-        child: Scaffold(
-          // floatingActionButtonLocation:
-          //     FloatingActionButtonLocation.centerDocked,
-          // floatingActionButton: FloatingActionButton(
-          //   onPressed: () {},
-          //   backgroundColor: Colors.white,
-          //   shape: const CircleBorder(),
-          //   child: Constants.bottomIcons(Icons.add),
-          // ),
-          bottomNavigationBar:
-              //
-              // BottomNavigationBar(
-              //     onTap: (index) {
-              //       switch (index) {
-              //         case 0:
-              //           AppNavigation.push(const YourOrderScreen());
-              //           break;
-              //       }
-              //     },
-              //     backgroundColor: Colors.white,
-              //     items: [
-              //       BottomNavigationBarItem(
-              //           label: "", icon: Constants.bottomIcons(Icons.list)),
-              //       BottomNavigationBarItem(
-              //           label: "", icon: Constants.bottomIcons(Icons.print))
-              //     ]),
-              widget.admin
-                  ? null
-                  : Container(
-                      padding: EdgeInsets.all(25.r),
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(40))),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                AppNavigation.push(const YourOrderScreen());
-                              },
-                              child: Constants.bottomIcons(Icons.list)),
-                          SizedBox(
-                              height: .04.sh, child: const VerticalDivider()),
-                          GestureDetector(
-                              onTap: () {
-                                AppNavigation.push(const PrintScreen());
-                              },
-                              child: Constants.bottomIcons(Icons.print))
-                        ],
-                      ),
-                    ),
-          backgroundColor: Constants.backgroundColor,
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                Container(
-                  width: 1.sw,
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 25.w, vertical: 30.h),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius:
-                          BorderRadius.vertical(bottom: Radius.circular(40))),
+        child: Stack(
+          children: [
+            SizedBox(
+              width: 1.sw,
+              height: 1.sh,
+              child: Scaffold(
+                // floatingActionButtonLocation:
+                //     FloatingActionButtonLocation.centerDocked,
+                // floatingActionButton: FloatingActionButton(
+                //   onPressed: () {},
+                //   backgroundColor: Colors.white,
+                //   shape: const CircleBorder(),
+                //   child: Constants.bottomIcons(Icons.add),
+                // ),
+                bottomNavigationBar:
+                    //
+                    // BottomNavigationBar(
+                    //     onTap: (index) {
+                    //       switch (index) {
+                    //         case 0:
+                    //           AppNavigation.push(const YourOrderScreen());
+                    //           break;
+                    //       }
+                    //     },
+                    //     backgroundColor: Colors.white,
+                    //     items: [
+                    //       BottomNavigationBarItem(
+                    //           label: "", icon: Constants.bottomIcons(Icons.list)),
+                    //       BottomNavigationBarItem(
+                    //           label: "", icon: Constants.bottomIcons(Icons.print))
+                    //     ]),
+                    widget.admin
+                        ? null
+                        : Container(
+                            padding: EdgeInsets.all(25.r),
+                            decoration: const BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(40))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                GestureDetector(
+                                    onTap: () {
+                                      AppNavigation.push(
+                                          const YourOrderScreen());
+                                    },
+                                    child: Constants.bottomIcons(Icons.list)),
+                                SizedBox(
+                                    height: .04.sh,
+                                    child: const VerticalDivider()),
+                                GestureDetector(
+                                    onTap: () {
+                                      AppNavigation.push(const PrintScreen());
+                                    },
+                                    child: Constants.bottomIcons(Icons.print))
+                              ],
+                            ),
+                          ),
+                backgroundColor: Constants.backgroundColor,
+                body: SingleChildScrollView(
                   child: Column(
-                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      8.verticalSpace,
-                      Row(children: [
-                        const Spacer(),
-                        Text(
-                          AppStrings.title_1.toUpperCase(),
-                          style: AppTextStyle.boldTextStyle(
-                              fontSize: 20.sp,
-                              fgColor: Constants.backgroundColor),
+                      Container(
+                        width: 1.sw,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: 25.w, vertical: 30.h),
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.vertical(
+                                bottom: Radius.circular(40))),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            8.verticalSpace,
+                            Row(children: [
+                              const Spacer(),
+                              Text(
+                                AppStrings.title_1.toUpperCase(),
+                                style: AppTextStyle.boldTextStyle(
+                                    fontSize: 20.sp,
+                                    fgColor: Constants.backgroundColor),
+                              ),
+                              const Spacer(),
+                              GestureDetector(
+                                onTap: () async {
+                                  setState(() {
+                                    loading = true;
+                                  });
+                                  await FirebaseServices.logout();
+                                  setState(() {
+                                    loading = false;
+                                  });
+                                  AppNavigation.popallStack(
+                                      const GettingStarted());
+                                },
+                                child: Constants.bottomIcons(
+                                    Icons.power_settings_new_rounded,
+                                    size: 30.r),
+                              )
+                            ]),
+                            8.verticalSpace,
+                            // Row(children: [
+                            //   const Spacer(),
+                            //   Text(
+                            //     AppStrings.title.toUpperCase(),
+                            //     style: AppTextStyle.boldTextStyle(
+                            //         fontSize: 20.sp,
+                            //         fgColor: Constants.backgroundColor),
+                            //   ),
+                            //   const Spacer(),
+                            // ]),
+                          ],
                         ),
-                        const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            AppNavigation.popallStack(const GettingStarted());
-                          },
-                          child: Constants.bottomIcons(
-                              Icons.power_settings_new_rounded,
-                              size: 30.r),
-                        )
-                      ]),
-                      8.verticalSpace,
-                      // Row(children: [
-                      //   const Spacer(),
-                      //   Text(
-                      //     AppStrings.title.toUpperCase(),
-                      //     style: AppTextStyle.boldTextStyle(
-                      //         fontSize: 20.sp,
-                      //         fgColor: Constants.backgroundColor),
-                      //   ),
-                      //   const Spacer(),
-                      // ]),
+                      ),
+                      30.verticalSpace,
+                      widget.admin ? adminBody() : body(),
+                      15.verticalSpace,
                     ],
                   ),
                 ),
-                30.verticalSpace,
-                widget.admin ? adminBody() : body(),
-                15.verticalSpace,
-              ],
+              ),
             ),
-          ),
+            Visibility(
+              visible: loading,
+              child: Container(
+                width: 1.sw,
+                height: 1.sh,
+                color: Colors.black54,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ));
   }
 

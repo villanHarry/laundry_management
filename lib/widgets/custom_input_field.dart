@@ -10,27 +10,34 @@ class CustomInputField extends StatefulWidget {
       this.controller,
       this.validator,
       this.keyboardType,
-      this.enable = true});
+      this.maxLength,
+      this.enable = true,
+      this.obscure = false});
 
   final String? prefix;
   final String? hint;
   final TextEditingController? controller;
-  final String Function(String?)? validator;
-
+  final String? Function(String?)? validator;
+  final bool obscure;
   final TextInputType? keyboardType;
   final bool enable;
+  final int? maxLength;
 
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
 }
 
 class _CustomInputFieldState extends State<CustomInputField> {
+  late bool show = widget.obscure;
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       enabled: widget.enable,
       controller: widget.controller,
       keyboardType: widget.keyboardType,
+      obscureText: widget.obscure ? show : false,
+      obscuringCharacter: '*',
+      maxLength: widget.maxLength,
       decoration: InputDecoration(
           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
           contentPadding:
@@ -40,6 +47,21 @@ class _CustomInputFieldState extends State<CustomInputField> {
           //
           ,
           isDense: true,
+          errorMaxLines: 3,
+          errorStyle: TextStyle(fontSize: 11.sp),
+          suffixIconConstraints:
+              BoxConstraints(maxHeight: 18.h, maxWidth: 20.w),
+          suffixIcon: widget.obscure
+              ? GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      show = !show;
+                    });
+                  },
+                  child: Icon(show
+                      ? Icons.remove_red_eye
+                      : Icons.visibility_off_rounded))
+              : null,
           hintStyle: AppTextStyle.regularTextStyle(
               fgColor: Colors.grey.shade800, fontSize: 16.sp),
           prefixIconConstraints: BoxConstraints(minHeight: 15.h),
@@ -56,6 +78,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
                 style: AppTextStyle.boldTextStyle(
                     fgColor: Colors.black, fontSize: 16.sp)),
           ),
+          counterText: "",
           hintText: widget.hint ?? ""),
       validator: widget.validator ??
           (value) {

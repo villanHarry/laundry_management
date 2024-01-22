@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +9,9 @@ import 'package:laundry_management/utils/app_navigation.dart';
 import 'package:laundry_management/utils/app_strings.dart';
 import 'package:laundry_management/utils/app_text_style.dart';
 import 'package:laundry_management/utils/constants.dart';
+import 'package:laundry_management/utils/firebaseServices.dart';
 import 'package:laundry_management/views/getting_started/getting_started.dart';
-import 'package:laundry_management/views/login_screen/login_screen.dart';
+import 'package:laundry_management/views/home_screen/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,8 +23,14 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Timer(const Duration(seconds: 2), () {
-      AppNavigation.popallStack(const GettingStarted());
+    Timer(const Duration(seconds: 2), () async {
+      if (auth!.currentUser != null) {
+        AppNavigation.popallStack(HomeScreen(
+          admin: auth!.currentUser!.email == "admin@gmail.com",
+        ));
+      } else {
+        AppNavigation.popallStack(const GettingStarted());
+      }
     });
     super.initState();
   }
