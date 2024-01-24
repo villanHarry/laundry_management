@@ -1,14 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laundry_management/providers/orders_provider.dart';
 import 'package:laundry_management/utils/constants.dart';
 import 'package:laundry_management/views/splash_screen/splash_screen.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await ScreenUtil.ensureScreenSize();
-  runApp(const MyApp());
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => OrdersProvider())
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {

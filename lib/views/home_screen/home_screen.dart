@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laundry_management/providers/orders_provider.dart';
 import 'package:laundry_management/utils/app_navigation.dart';
 import 'package:laundry_management/utils/app_strings.dart';
 import 'package:laundry_management/utils/app_text_style.dart';
@@ -12,6 +13,7 @@ import 'package:laundry_management/views/getting_started/getting_started.dart';
 import 'package:laundry_management/views/print_screen/print_screen.dart';
 import 'package:laundry_management/views/your_orders_screen/your_orders_screen.dart';
 import 'package:laundry_management/widgets/product_card.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, this.admin = false});
@@ -24,12 +26,20 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   String dropDOwnValue = AppStrings.queue;
-  bool loading = false;
+  bool loading = true;
+  late final orderProvider = context.read<OrdersProvider>();
+  late final orderProvider2 = context.watch<OrdersProvider>();
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      log(auth!.currentUser.toString());
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      // log(auth!.currentUser.toString());
+      if (widget.admin) {
+        getFilteredOrder();
+      } else {
+        loading = await orderProvider.getOrder();
+        setState(() {});
+      }
     });
     // TODO: implement initState
     super.initState();
@@ -195,14 +205,22 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           //
           Expanded(
-            child:
-                //
-                //     Center(
-                //   child: ProductCard.heading("No Orders Found!", fontSize: 24.sp),
-                // )
-                ListView(padding: EdgeInsets.zero, children: [
-              for (int i = 0; i < 10; i++) ProductCard(admin: widget.admin)
-            ]),
+            child: orderProvider2.orders.isEmpty
+                ? Center(
+                    child: ProductCard.heading("No Orders Found!",
+                        fontSize: 24.sp),
+                  )
+                : ListView(padding: EdgeInsets.zero, children: [
+                    for (int i = 0; i < orderProvider2.orders.length; i++)
+                      ProductCard(
+                          id: orderProvider2.orders[i].id,
+                          title: orderProvider2.orders[i].name,
+                          amount:
+                              "${orderProvider2.orders[i].amount!.toStringAsFixed(0)} PKR",
+                          address: orderProvider2.orders[i].address,
+                          status: orderProvider2.orders[i].status,
+                          admin: widget.admin)
+                  ]),
           ),
         ],
       ),
@@ -238,16 +256,25 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: ProductCard.value(statusView[e] ?? "",
                           align: TextAlign.end)))
                   .toList(),
-              onChanged: (value) {
+              onChanged: (value) async {
                 if (value != null) {
                   setState(() {
                     dropDOwnValue = value;
                   });
+                  await getFilteredOrder();
                 }
               }),
         ),
       ],
     );
+  }
+
+  Future<void> getFilteredOrder() async {
+    setState(() {
+      loading = true;
+    });
+    loading = await orderProvider.getOrder(where: {'status': dropDOwnValue});
+    setState(() {});
   }
 
   Widget body() {
@@ -265,15 +292,23 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(AppStrings.no_of_orders.toUpperCase(),
             style: AppTextStyle.boldTextStyle(
                 fgColor: Colors.black, fontSize: 20.sp)),
-        values(0),
+        values(orderProvider2.orders.length),
         Text(AppStrings.queue.toUpperCase(),
             style: AppTextStyle.boldTextStyle(
                 fgColor: Colors.black, fontSize: 20.sp)),
-        values(0),
+        values(orderProvider2.orders
+            .where(
+                (element) => element.status == statusView[ProductStatus.queue])
+            .toList()
+            .length),
         Text(AppStrings.done.toUpperCase(),
             style: AppTextStyle.boldTextStyle(
                 fgColor: Colors.black, fontSize: 20.sp)),
-        values(0),
+        values(orderProvider2.orders
+            .where(
+                (element) => element.status == statusView[ProductStatus.done])
+            .toList()
+            .length),
         30.verticalSpace
       ]),
     );

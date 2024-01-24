@@ -122,8 +122,18 @@ class _SignupScreenState extends State<SignupScreen> {
                                 controller: address),
                             35.verticalSpace,
                             CustomInputField(
+                                validator: (String? value) {
+                                  if (value!.isEmpty) {
+                                    return "fields can't be empty";
+                                  } else if (value.length < 11) {
+                                    return "Invalid Phone Number";
+                                  }
+                                },
                                 prefix: AppStrings.phone.toUpperCase(),
                                 hint: AppStrings.phone,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly
+                                ],
                                 keyboardType: TextInputType.phone,
                                 maxLength: AppValidator.phoneLength,
                                 controller: phone),

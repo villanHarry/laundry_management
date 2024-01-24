@@ -7,13 +7,14 @@ import 'package:laundry_management/utils/app_text_style.dart';
 class ProductCard extends StatefulWidget {
   const ProductCard(
       {super.key,
+      this.id,
       this.title,
       this.amount,
       this.address,
       this.status,
       this.admin = false});
 
-  final String? title, amount, address, status;
+  final String? id, title, amount, address, status;
   final bool admin;
 
   @override
@@ -37,13 +38,14 @@ class _ProductCardState extends State<ProductCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (widget.admin) {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return const ProductPopup();
-              });
-        }
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) {
+              return widget.admin
+                  ? ProductPopup(id: widget.id)
+                  : ProductPopup2(id: widget.id);
+            });
       },
       child: entry(
           title: widget.title,

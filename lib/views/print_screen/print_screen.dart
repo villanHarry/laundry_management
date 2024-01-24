@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:laundry_management/providers/orders_provider.dart';
 import 'package:laundry_management/services/order_apis.dart';
 import 'package:laundry_management/utils/app_navigation.dart';
 import 'package:laundry_management/utils/app_strings.dart';
@@ -12,6 +13,7 @@ import 'package:laundry_management/widgets/custom_button.dart';
 import 'package:laundry_management/widgets/custom_input_field.dart';
 import 'package:laundry_management/widgets/printable_data.dart';
 import 'package:laundry_management/widgets/product_card.dart';
+import 'package:provider/provider.dart';
 
 class PrintScreen extends StatefulWidget {
   const PrintScreen({super.key});
@@ -125,8 +127,18 @@ class _PrintScreenState extends State<PrintScreen> {
                             CustomInputField(
                               maxLength: AppValidator.phoneLength,
                               controller: phone,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
                               prefix: AppStrings.phone.toUpperCase(),
                               hint: AppStrings.phone,
+                              validator: (String? value) {
+                                if (value!.isEmpty) {
+                                  return "fields can't be empty";
+                                } else if (value.length < 11) {
+                                  return "Invalid Phone Number";
+                                }
+                              },
                               keyboardType: TextInputType.phone,
                             ),
                             35.verticalSpace,
@@ -134,7 +146,17 @@ class _PrintScreenState extends State<PrintScreen> {
                               controller: nOfClothes,
                               prefix: AppStrings.no_of_clothes.toUpperCase(),
                               hint: "0",
-                              keyboardType: TextInputType.phone,
+                              validator: (String? value) {
+                                if (value!.isEmpty) {
+                                  return "fields can't be empty";
+                                } else if (int.parse(value) <= 0) {
+                                  return "Invalid Number";
+                                }
+                              },
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              keyboardType: TextInputType.number,
                             ),
                             35.verticalSpace,
                             CustomInputField(
@@ -199,6 +221,9 @@ class _PrintScreenState extends State<PrintScreen> {
                                             name: name.text,
                                             phone: phone.text,
                                             retur: dateController.text);
+                                        await context
+                                            .read<OrdersProvider>()
+                                            .getOrder();
                                         await buildPrintableData(
                                             status: statusView[
                                                 ProductStatus.queue]!,

@@ -1,5 +1,6 @@
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laundry_management/utils/app_strings.dart';
+import 'package:laundry_management/utils/constants.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
@@ -130,6 +131,7 @@ buildPrintableData(
           ]),
         );
       }));
+  Constants.showToast("Printing...");
   await Printing.layoutPdf(
       onLayout: (PdfPageFormat format) async => doc.save());
 }

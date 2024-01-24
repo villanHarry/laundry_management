@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:laundry_management/utils/app_assets.dart';
 import 'package:laundry_management/utils/app_navigation.dart';
 import 'package:laundry_management/utils/app_strings.dart';
 import 'package:laundry_management/utils/app_text_style.dart';
 import 'package:laundry_management/utils/constants.dart';
+import 'package:laundry_management/utils/firebaseServices.dart';
 import 'package:laundry_management/views/orders_list/orders_list_screen.dart';
 
 class YourOrderScreen extends StatefulWidget {
@@ -47,15 +49,17 @@ class _YourOrderScreenState extends State<YourOrderScreen> {
                       ),
                       15.horizontalSpace,
                       Container(
-                        width: 50.r,
-                        height: 50.r,
+                        width: 42.r,
+                        height: 42.r,
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: Constants.backgroundColor),
+                            image: DecorationImage(
+                                image: AssetImage(AppAssets.avatar),
+                                fit: BoxFit.contain)),
                       ),
                       10.horizontalSpace,
                       Text(
-                        "${"smkz75@gmail.com"}",
+                        auth!.currentUser!.email ?? "",
                         style: AppTextStyle.boldTextStyle(
                             fontSize: 21.sp, fgColor: Colors.black),
                       )

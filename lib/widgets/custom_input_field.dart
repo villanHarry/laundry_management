@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:laundry_management/utils/app_text_style.dart';
 
@@ -11,6 +12,7 @@ class CustomInputField extends StatefulWidget {
       this.validator,
       this.keyboardType,
       this.maxLength,
+      this.inputFormatters,
       this.enable = true,
       this.obscure = false});
 
@@ -22,6 +24,7 @@ class CustomInputField extends StatefulWidget {
   final TextInputType? keyboardType;
   final bool enable;
   final int? maxLength;
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<CustomInputField> createState() => _CustomInputFieldState();
@@ -38,6 +41,7 @@ class _CustomInputFieldState extends State<CustomInputField> {
       obscureText: widget.obscure ? show : false,
       obscuringCharacter: '*',
       maxLength: widget.maxLength,
+      inputFormatters: widget.inputFormatters,
       decoration: InputDecoration(
           // border: OutlineInputBorder(borderRadius: BorderRadius.circular(50)),
           contentPadding:
